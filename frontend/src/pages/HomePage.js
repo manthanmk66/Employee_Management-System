@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Navigate } from "react-router-dom";
 
 const HomePage = () => {
   const [empData, setEmpData] = useState([]);
@@ -37,18 +38,21 @@ const HomePage = () => {
       // Check if the deletion was successful
       if (response.status === 200) {
         console.log("User deleted successfully");
-        toast.error("Failed to delete user", { position: "top-center" }); // Refresh the employee data after deletion
+        toast.success("User deleted successfully", { position: "top-center" });
+        // Refresh the employee data after deletion
         getAllData();
       } else {
         console.log("Failed to delete user");
+        toast.error("Failed to delete user", { position: "top-center" });
       }
     } catch (error) {
       console.error("Error deleting user:", error);
+      toast.error("Failed to delete user", { position: "top-center" });
     }
   };
 
   const handleEdit = (id) => {
-    console.log("Edit button clicked for user with ID:", id);
+    
   };
 
   useEffect(() => {
@@ -59,7 +63,7 @@ const HomePage = () => {
     <>
       <section className="container px-4 mx-auto py-4">
         <ToastContainer />
-        <div className="flex items-center justify-between">
+        <div className="flex items-start justify-between">
           <ToastContainer />
           <div>
             <h2 className="text-lg font-medium text-gray-800 dark:text-white">
@@ -156,7 +160,7 @@ const HomePage = () => {
                           </td>
                           <td>
                             <button
-                              className="text-black px-4 py-4 rounded-md bg-yellow-400"
+                              className="text-black px-4 py-2 rounded-md bg-yellow-400"
                               onClick={() => handleEdit(person.id)}
                             >
                               Edit
@@ -164,7 +168,7 @@ const HomePage = () => {
                           </td>
                           <td>
                             <button
-                              className="text-black px-4 py-4 rounded-md bg-yellow-400"
+                              className="text-black px-4 py-2 rounded-md bg-yellow-400"
                               onClick={() => handleDelete(person._id)}
                             >
                               Delete
