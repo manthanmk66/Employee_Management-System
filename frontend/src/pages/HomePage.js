@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const HomePage = () => {
   const [empData, setEmpData] = useState([]);
@@ -25,6 +27,30 @@ const HomePage = () => {
     }
   };
 
+  const handleDelete = async (userId) => {
+    try {
+      // Send a DELETE request to the backend API endpoint with the user ID
+      const response = await axios.delete(
+        `${process.env.REACT_APP_BASE_URL}/deleteUser/${userId}`
+      );
+
+      // Check if the deletion was successful
+      if (response.status === 200) {
+        console.log("User deleted successfully");
+        toast.error("Failed to delete user", { position: "top-center" }); // Refresh the employee data after deletion
+        getAllData();
+      } else {
+        console.log("Failed to delete user");
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
+
+  const handleEdit = (id) => {
+    console.log("Edit button clicked for user with ID:", id);
+  };
+
   useEffect(() => {
     getAllData();
   }, []);
@@ -32,7 +58,9 @@ const HomePage = () => {
   return (
     <>
       <section className="container px-4 mx-auto py-4">
+        <ToastContainer />
         <div className="flex items-center justify-between">
+          <ToastContainer />
           <div>
             <h2 className="text-lg font-medium text-gray-800 dark:text-white">
               Employees
@@ -72,9 +100,21 @@ const HomePage = () => {
 
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                        className="px-4  py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
                       >
                         Role
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                      >
+                        Edit
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                      >
+                        Delete
                       </th>
                     </tr>
                   </thead>
@@ -113,6 +153,22 @@ const HomePage = () => {
 
                           <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                             {person.role}
+                          </td>
+                          <td>
+                            <button
+                              className="text-black px-4 py-4 rounded-md bg-yellow-400"
+                              onClick={() => handleEdit(person.id)}
+                            >
+                              Edit
+                            </button>
+                          </td>
+                          <td>
+                            <button
+                              className="text-black px-4 py-4 rounded-md bg-yellow-400"
+                              onClick={() => handleDelete(person._id)}
+                            >
+                              Delete
+                            </button>
                           </td>
                         </tr>
                       ))}
