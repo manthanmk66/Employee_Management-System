@@ -1,55 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
-// const people = [
-//   {
-//     name: "John Doe",
-//     title: "Front-end Developer",
-//     department: "Engineering",
-//     email: "john@devui.com",
-//     role: "Developer",
-//     image:
-//       "https://images.unsplash.com/photo-1628157588553-5eeea00af15c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1160&q=80",
-//   },
-//   {
-//     name: "Jane Doe",
-//     title: "Back-end Developer",
-//     department: "Engineering",
-//     email: "jane@devui.com",
-//     role: "CTO",
-//     image:
-//       "https://images.unsplash.com/photo-1639149888905-fb39731f2e6c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=928&q=80",
-//   },
-// ];
+import axios from "axios";
 
 const HomePage = () => {
-  const [empData, setEmpData] = useState();
+  const [empData, setEmpData] = useState([]);
 
   const getAllData = async () => {
     try {
-      const getPeople = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/getallUsers`,
+      const response = await axios.get(
+        `${process.env.REACT_APP_BASE_URL.replace(
+          "https",
+          "http"
+        )}/getallUsers`,
         {
-          method: "GET",
           headers: {
             "Content-Type": "application/json",
           },
         }
       );
 
-      const res = await getPeople.json();
-      setEmpData(res);
+      setEmpData(response.data);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching employee data:", error);
     }
   };
 
   useEffect(() => {
     getAllData();
-  },[]);
-  console.log(empData);
-
-  // console.log(empData);
+  }, []);
 
   return (
     <>
@@ -102,41 +80,42 @@ const HomePage = () => {
                   </thead>
 
                   <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
-                    {empData?.data.map((person) => (
-                      <tr key={person.name}>
-                        <td className="py-4 px-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="flex-shrink-0 h-10 w-10">
-                              <img
-                                className="h-10 w-10 rounded-full object-cover"
-                                src={person.image}
-                                alt=""
-                              />
-                            </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                {person.name}
+                    {empData?.data &&
+                      empData.data.map((person) => (
+                        <tr key={person.name}>
+                          <td className="py-4 px-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <div className="flex-shrink-0 h-10 w-10">
+                                <img
+                                  className="h-10 w-10 rounded-full object-cover"
+                                  src={person.image}
+                                  alt=""
+                                />
                               </div>
-                              <div className="text-sm text-gray-500 dark:text-gray-300">
-                                {person.email}
+                              <div className="ml-4">
+                                <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                  {person.name}
+                                </div>
+                                <div className="text-sm text-gray-500 dark:text-gray-300">
+                                  {person.email}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </td>
-                        <td className="px-12 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900 dark:text-white">
-                            {person.title}
-                          </div>
-                          <div className="text-sm text-gray-500 dark:text-gray-300">
-                            {person.department}
-                          </div>
-                        </td>
+                          </td>
+                          <td className="px-12 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-900 dark:text-white">
+                              {person.title}
+                            </div>
+                            <div className="text-sm text-gray-500 dark:text-gray-300">
+                              {person.department}
+                            </div>
+                          </td>
 
-                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                          {person.role}
-                        </td>
-                      </tr>
-                    ))}
+                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                            {person.role}
+                          </td>
+                        </tr>
+                      ))}
                   </tbody>
                 </table>
               </div>
